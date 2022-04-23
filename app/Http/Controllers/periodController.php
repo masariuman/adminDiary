@@ -68,8 +68,15 @@ class periodController extends Controller
         //disini kita akan memasukkan data ke database
         Period::create([
             'link' => str_replace('#', 'o', str_replace('.', 'A', str_replace('/', '$', Hash::make(Hash::make(Uuid::generate()->string))))),
-            'jabatan' => $data['jabatan'],
-            'tmtJabatan' => $data['tmtJabatan']
+            'year' => $data['year'],
+            'month' => $data['month']
+        ]);
+        //setelah kita berhasil menginput ke database, maka jangan lupa untuk mengambil data baru tersebut ke dalam variable yang akan ditampilkan ke view sebagai data baru
+        $data['data'] = Period::orderBy("id", "DESC")->first();
+        $data['data']['nomor'] = " NEW";
+        //dan jangan lupa di teruskan ke view
+        return response()->json([
+            'data' => $data
         ]);
     }
 
@@ -92,7 +99,12 @@ class periodController extends Controller
      */
     public function edit($id)
     {
-        //
+        //kita akan mengambil data yang akan di edit
+        $data["data"] = Period::where('link',$id)->first();
+        //tidak lupa kita return ke view
+        return response()->json([
+            'data' => $data
+        ]);
     }
 
     /**
