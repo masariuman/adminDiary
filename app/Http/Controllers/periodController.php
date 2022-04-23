@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Hash;
+use App\Models\PeriodHistory;
 use App\Models\Period;
 
 class periodController extends Controller
@@ -71,6 +72,12 @@ class periodController extends Controller
             'year' => $data['year'],
             'month' => $data['month']
         ]);
+        $newData = Period::orderBy("id", "DESC")->first();
+        PeriodHistory::create([
+            'link' => str_replace('#', 'o', str_replace('.', 'A', str_replace('/', '$', Hash::make(Hash::make(Uuid::generate()->string))))),
+            'year' => $data['year'],
+            'month' => $data['month']
+        ])
         //setelah kita berhasil menginput ke database, maka jangan lupa untuk mengambil data baru tersebut ke dalam variable yang akan ditampilkan ke view sebagai data baru
         $data['data'] = Period::orderBy("id", "DESC")->first();
         $data['data']['nomor'] = " NEW";

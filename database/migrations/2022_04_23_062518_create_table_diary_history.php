@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('date')->nullable();
             $table->string('title')->nullable();
             $table->string('content')->nullable();
-            $table->enum('history_status',['Edit','Delete'])->comment('period change history');
+            $table->enum('history_status',['New','Edit','Delete'])->default('New')->comment('period change history');
             $table->enum('active',[1,0])->default(1)->comment('show status');
             $table->timestamps();
         });

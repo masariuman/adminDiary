@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('period_id')->references('id')->on('period');
             $table->string('year')->nullable();
             $table->string('month')->nullable();
-            $table->enum('history_status',['Edit','Delete'])->comment('period change history');
+            $table->enum('history_status',['New','Edit','Delete'])->default('New')->comment('period change history');
             $table->enum('active',[1,0])->default(1)->comment('show status');
             $table->timestamps();
         });
