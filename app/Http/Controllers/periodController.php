@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Period;
 
 class periodController extends Controller
@@ -54,7 +55,22 @@ class periodController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //disini kita mengambil semua data yang diberikan dari reactjs dulu
+        $data = $request->request->all();
+        //kita lakukan validasi apakah datanya null atau tidak
+        if ($data['year']===null || $data['year']==='null' || $data['year']==='undefined') {
+            //null kita berikan string kosong, karena data null dari reactjs atau undefined tidak dianggap string kosong
+            $data['year']="";
+        }
+        if ($data['month']===null || $data['month']==='null' || $data['month']==='undefined') {
+            $data['month']="";
+        }
+        //disini kita akan memasukkan data ke database
+        Period::create([
+            'link' => str_replace('#', 'o', str_replace('.', 'A', str_replace('/', '$', Hash::make(Hash::make(Uuid::generate()->string))))),
+            'jabatan' => $data['jabatan'],
+            'tmtJabatan' => $data['tmtJabatan']
+        ]);
     }
 
     /**

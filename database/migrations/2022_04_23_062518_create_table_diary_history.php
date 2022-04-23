@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('content')->nullable();
             $table->enum('history_status',['Edit','Delete'])->comment('period change history');
-            $table->enum('active',[1,0])->comment('show status');
+            $table->enum('active',[1,0])->default(1)->comment('show status');
             $table->timestamps();
         });
     }
