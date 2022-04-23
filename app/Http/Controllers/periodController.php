@@ -127,7 +127,7 @@ class periodController extends Controller
             $data['month']="";
         }
         //kita ambil dulu data periode yang mau kita ubah dari database
-        $period = Period::where('link',$id);
+        $period = Period::where('link',$id)->first();
         //kita update datanya
         $period->update([
             'year' => $data['year'],
@@ -162,6 +162,30 @@ class periodController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //kita akan mengambil data yang akan di hapus
+        $period = Period::where('link',$id)->first();
+        //kita ganti status aktifnya menjadi 0 sebagai status dihapus
+        $period->update([
+            'active' => 0
+        ]);
+        //sebelum kita return, kita akan memberikan full data dulu.
+        // jumlah data dalam 1 page
+        $pagination = 5 ;
+        // kita load data periode yang hanya aktif dan langsung di pagination
+        $data['period'] = Period::where('active',1)->paginate($pagination);
+        //disini kita memasukkan angka hitungan untuk membuat nomor yang aka n ditampilkan pada tabel nantinya. contoh pada halaman 1 diakhiri dengan nomor 5, dan halaman 2 akan di mulai dari nomor 6.
+        $count = $data['period']->CurrentPage() * $pagination - ($pagination - 1);
+        // bisa dilihat data diatas, bahwa yang diambil itu currentpage atau page yang sedang aktif sekarang, misalnya, sekarang page yg aktif itu page 2, maka page 2 itu akan di kalikan dengan $pagination yang mana hal itu adalah integer 5, maka 2x5 = 10. dan dikurangi dengan $pagination-1 yang mana disini hasilnya 4, jadi 10-4 = 6. maka padaha halaman 2 akan dimulai dari nomor 6
+
+        //tidak lupa kita masukkan variabel nomor ke setiap array data yang kita dapatkan
+        foreach ($data['period'] as $items) {
+            $items['nomor'] = $count;
+            //setelah memasukkan nomor tidak lupa kita jumlahkan 1, jadi untuk array berikutnya akan menjadi nomor 7 misalnya
+            $count++;
+        }
+        //tidak lupa kita return ke view
+        return response()->json([
+            'data' => $data
+        ]);
     }
 }
